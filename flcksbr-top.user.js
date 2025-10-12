@@ -3,11 +3,13 @@
 // @namespace    http://tampermonkey.net/
 // @version      2025-10-12
 // @description  Убирает height у .wrapper и меняет ссылку постера на страницу фильма
-// @author       amnesia
+// @author       Алексей
 // @match        https://flcksbr.top/*
 // @match        https://www.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        none
+// @updateURL   https://raw.githubusercontent.com/amnesiaof/flcksbr-top-userscript/main/flcksbr-top.user.js
+// @downloadURL https://raw.githubusercontent.com/amnesiaof/flcksbr-top-userscript/main/flcksbr-top.user.js
 // ==/UserScript==
 
 (function() {
