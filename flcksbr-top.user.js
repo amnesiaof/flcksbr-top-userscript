@@ -2,7 +2,7 @@
 // @name         Kinopoisk → Flcksbr
 // @namespace    http://tampermonkey.net/
 // @version      2025-10-12
-// @description  Убирает height у .wrapper и меняет ссылку постера на страницу фильма
+// @description  Улучшения интерфейса и автоматическая ссылка на страницу фильма на flcksbr.top
 // @author       amnesiaof
 // @match        https://flcksbr.top/*
 // @match        https://www.kinopoisk.ru/*
