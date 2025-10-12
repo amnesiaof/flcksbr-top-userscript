@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Kinopoisk → Flcksbr
+// @name         Kinopoisk → Flicksbar
 // @namespace    http://tampermonkey.net/
 // @version      2025-10-12
 // @description  Улучшения интерфейса и автоматическая ссылка на страницу фильма на flcksbr.top
