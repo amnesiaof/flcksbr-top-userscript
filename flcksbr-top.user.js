@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         flcksbr.top
+// @name         Kinopoisk → Flcksbr
 // @namespace    http://tampermonkey.net/
 // @version      2025-10-12
 // @description  Убирает height у .wrapper и меняет ссылку постера на страницу фильма
