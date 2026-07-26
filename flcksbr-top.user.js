@@ -1,10 +1,12 @@
 // ==UserScript==
-// @name         Kinopoisk → kinokino.vip
+// @name         Kinopoisk → kinokino.vip / fbfind.top / fbdomen.top
 // @namespace    http://tampermonkey.net/
-// @version      2026-07-26
-// @description  Улучшения интерфейса и автоматическая ссылка на страницу фильма на kinokino.vip
+// @version      2026-07-26.2
+// @description  Улучшения интерфейса, авто-ссылка на kinokino и очистка рекламы на зеркалах
 // @author       amnesiaof
 // @match        https://kinokino.vip/*
+// @match        https://fbfind.top/*
+// @match        https://fbdomen.top/*
 // @match        https://www.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        none
@@ -15,7 +17,9 @@
 (function() {
     'use strict';
 
-    const isKinokino = window.location.hostname.includes('kinokino.vip');
+    // Зеркала, на которых нужно удалять рекламу и модалки
+    const mirrorHosts = ['kinokino.vip', 'fbfind.top', 'fbdomen.top'];
+    const isMirror = mirrorHosts.some(h => window.location.hostname.includes(h));
     const isKinopoisk = window.location.hostname.includes('kinopoisk.ru');
 
     // --- 1. Универсально убираем фиксированную высоту у .wrapper ---
@@ -27,31 +31,25 @@
     `;
     document.head.appendChild(style);
 
-    // --- 2. Логика для kinokino.vip: удаляем рекламу и модалки ---
-    if (isKinokino) {
+    // --- 2. Логика для зеркал: удаляем рекламу и модалки ---
+    if (isMirror) {
         function removeAds() {
-            // Модалка с "новой инструкцией"
-            const modal = document.querySelector('#instruction-modal');
-            if (modal) modal.remove();
+            // Селекторы, которые могут встречаться на зеркалах
+            const selectorsToRemove = [
+                '#instruction-modal',              // модалка "Новая инструкция"
+                '#tgWrapper',                      // баннер Telegram
+                '.topAdPad',                       // блок с movie_video
+                '#TopAdMb',                        // верхний мобильный баннер
+                '.adDown',                         // нижняя реклама
+                '.brand'                           // бренд-реклама сверху
+            ];
 
-            // Баннер с telegram
-            const tgWrapper = document.querySelector('#tgWrapper');
-            if (tgWrapper) tgWrapper.remove();
+            selectorsToRemove.forEach(sel => {
+                document.querySelectorAll(sel).forEach(el => el.remove());
+            });
 
-            // Рекламный блок topAdPad
-            const topAdPad = document.querySelector('.topAdPad');
-            if (topAdPad) topAdPad.remove();
-
-            // Дополнительно: верхний мобильный баннер и нижняя реклама
-            const topAdMb = document.querySelector('#TopAdMb');
-            if (topAdMb) topAdMb.remove();
-
-            const adDown = document.querySelector('.adDown');
-            if (adDown) adDown.remove();
-
-            // Скрипт vak345.com тоже можно подчистить, если остался
-            const adScript = document.querySelector('script[src*="vak345.com"]');
-            if (adScript) adScript.remove();
+            // Подчищаем рекламные скрипты по домену
+            document.querySelectorAll('script[src*="vak345.com"]').forEach(el => el.remove());
         }
 
         removeAds();
