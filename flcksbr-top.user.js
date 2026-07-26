@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Kinopoisk → Flicksbar
+// @name         Kinopoisk → kinokino.vip
 // @namespace    http://tampermonkey.net/
-// @version      2025-10-12
-// @description  Улучшения интерфейса и автоматическая ссылка на страницу фильма на flcksbr.top
+// @version      2026-07-26
+// @description  Улучшения интерфейса и автоматическая ссылка на страницу фильма на kinokino.vip
 // @author       amnesiaof
-// @match        https://flcksbr.top/*
+// @match        https://kinokino.vip/*
 // @match        https://www.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        none
@@ -15,7 +15,10 @@
 (function() {
     'use strict';
 
-    // --- 1. Убираем фиксированную высоту у .wrapper ---
+    const isKinokino = window.location.hostname.includes('kinokino.vip');
+    const isKinopoisk = window.location.hostname.includes('kinopoisk.ru');
+
+    // --- 1. Универсально убираем фиксированную высоту у .wrapper ---
     const style = document.createElement('style');
     style.textContent = `
         .wrapper {
@@ -24,23 +27,57 @@
     `;
     document.head.appendChild(style);
 
-    // --- 2. Меняем ссылку у постера ---
-    function replacePosterLink() {
-        const link = document.querySelector('a.styles_posterLink__JMbfE');
-        if (link) {
-            // Получаем ID из URL текущей страницы, например: /series/682468/
-            const match = window.location.pathname.match(/\/(\d+)/);
-            if (match) {
-                const id = match[1];
-                link.href = `https://flcksbr.top/film/${id}`;
-            }
+    // --- 2. Логика для kinokino.vip: удаляем рекламу и модалки ---
+    if (isKinokino) {
+        function removeAds() {
+            // Модалка с "новой инструкцией"
+            const modal = document.querySelector('#instruction-modal');
+            if (modal) modal.remove();
+
+            // Баннер с telegram
+            const tgWrapper = document.querySelector('#tgWrapper');
+            if (tgWrapper) tgWrapper.remove();
+
+            // Рекламный блок topAdPad
+            const topAdPad = document.querySelector('.topAdPad');
+            if (topAdPad) topAdPad.remove();
+
+            // Дополнительно: верхний мобильный баннер и нижняя реклама
+            const topAdMb = document.querySelector('#TopAdMb');
+            if (topAdMb) topAdMb.remove();
+
+            const adDown = document.querySelector('.adDown');
+            if (adDown) adDown.remove();
+
+            // Скрипт vak345.com тоже можно подчистить, если остался
+            const adScript = document.querySelector('script[src*="vak345.com"]');
+            if (adScript) adScript.remove();
         }
+
+        removeAds();
+
+        // Следим за динамическими изменениями (SPA навигация может перерисовывать элементы)
+        const observer = new MutationObserver(() => removeAds());
+        observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Пробуем сразу
-    replacePosterLink();
+    // --- 3. Логика для kinopoisk.ru: меняем ссылку у постера ---
+    if (isKinopoisk) {
+        function replacePosterLink() {
+            const link = document.querySelector('a.styles_posterLink__JMbfE');
+            if (link && !link.dataset.kinokinoPatched) {
+                const match = window.location.pathname.match(/\/(\d+)/);
+                if (match) {
+                    const id = match[1];
+                    link.href = `https://kinokino.vip/film/${id}`;
+                    link.dataset.kinokinoPatched = '1'; // защита от зацикливания
+                }
+            }
+        }
 
-    // Следим за динамическими изменениями (SPA)
-    const observer = new MutationObserver(() => replacePosterLink());
-    observer.observe(document.body, { childList: true, subtree: true });
+        replacePosterLink();
+
+        const observer = new MutationObserver(() => replacePosterLink());
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
 })();
