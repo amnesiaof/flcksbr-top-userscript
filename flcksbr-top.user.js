@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kinopoisk → kinokino.vip / fbfind.top / fbdomen.top
 // @namespace    http://tampermonkey.net/
-// @version      2026-07-26.2
+// @version      2026-09-29
 // @description  Улучшения интерфейса, авто-ссылка на kinokino и очистка рекламы на зеркалах
 // @author       amnesiaof
 // @match        https://kinokino.vip/*
