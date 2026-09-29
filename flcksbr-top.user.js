@@ -7,6 +7,7 @@
 // @match        https://kinokino.vip/*
 // @match        https://fbfind.top/*
 // @match        https://fbdomen.top/*
+// @match        https://brogiro.cfd/*
 // @match        https://www.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        none
@@ -18,7 +19,7 @@
     'use strict';
 
     // Зеркала, на которых нужно удалять рекламу и модалки
-    const mirrorHosts = ['kinokino.vip', 'fbfind.top', 'fbdomen.top'];
+    const mirrorHosts = ['kinokino.vip', 'fbfind.top', 'fbdomen.top', 'brogiro.cfd'];
     const isMirror = mirrorHosts.some(h => window.location.hostname.includes(h));
     const isKinopoisk = window.location.hostname.includes('kinopoisk.ru');
 
