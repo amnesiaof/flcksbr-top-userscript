@@ -62,9 +62,15 @@
     // --- 3. Логика для kinopoisk.ru: меняем ссылку у постера ---
     if (isKinopoisk) {
         function replacePosterLink() {
-            const link = document.querySelector('a.styles_posterLink__JMbfE');
+            // Ищем по части имени класса или через постер с фиксированным классом .film-poster
+            const link = document.querySelector('a[class*="posterLink"]') 
+                      || document.querySelector('img.film-poster')?.closest('a');
+
             if (link && !link.dataset.kinokinoPatched) {
-                const match = window.location.pathname.match(/\/(\d+)/);
+                // Извлекаем ID из URL страницы или из самого href постера (/film/1437923/posters/)
+                const match = window.location.pathname.match(/\/(?:film|series)\/(\d+)/) 
+                           || link.getAttribute('href')?.match(/\/film\/(\d+)/);
+
                 if (match) {
                     const id = match[1];
                     link.href = `https://kinokino.vip/film/${id}`;
